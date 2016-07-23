@@ -79,7 +79,7 @@ int main(const int arg_num, const char *arg_vec[]) {
         if (puzzle.at(i).row() == puzzle.at(j).row() ||
             puzzle.at(i).column() == puzzle.at(j).column() ||
             puzzle.at(i).block() == puzzle.at(j).block()) {
-          puzzle.at(i).del_flag(puzzle.at(j).value);
+          puzzle.at(i).delete_flag(puzzle.at(j).value);
         }
       }
 

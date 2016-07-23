@@ -13,13 +13,7 @@ struct cell {
   uint column() const { return column_num; }
   uint block() const { return (column_num/3) + 3*(row_num/3); }
 
-  void add_flag(const uint n) {
-    if (find(flags.begin(), flags.end(), n) == flags.end()) {
-      flags.push_back(n);
-      sort(flags.begin(), flags.end());
-    }
-  }
-  void del_flag(const uint n) {
+  void delete_flag(const uint n) {
     for (uint i = 0; i < flags.size(); i++) {
       if (flags.at(i) == n) flags.erase(flags.begin()+i);
     }
