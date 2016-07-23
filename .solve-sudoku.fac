@@ -1,0 +1,5 @@
+| g++ -std=c++11 -Wall -Werror -lboost_system -lboost_filesystem -lboost_program_options -o solve-sudoku.exe solve-sudoku.cpp
+< solve-sudoku.h
+< solve-sudoku.cpp
+C ~/.ccache/
+> solve-sudoku.exe
