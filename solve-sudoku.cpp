@@ -73,7 +73,7 @@ int main(const int arg_num, const char *arg_vec[]) {
     for (uint i = 0; i < puzzle.size(); i++) {
       if (puzzle.at(i).value > 0) continue;
 
-      // update flags in cell
+      // ... update flags in cell ...
       for (uint j = 0; j < puzzle.size(); j++) {
         if (i == j) continue;
         if (puzzle.at(i).row() == puzzle.at(j).row() ||
@@ -83,7 +83,7 @@ int main(const int arg_num, const char *arg_vec[]) {
         }
       }
 
-      // set value of cell if there is only one flag left
+      // ... and set value of cell if there is only one flag left
       if (puzzle.at(i).flags.size() == 1) {
         puzzle.at(i).value = puzzle.at(i).flags.at(0);
       }
