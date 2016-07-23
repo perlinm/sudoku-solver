@@ -76,7 +76,7 @@ int main(const int arg_num, const char *arg_vec[]) {
   // solve puzzle
   while(!solved(puzzle)) {
 
-    bool update = false;
+    uint updates = 0;
     // for each cell...
     for (uint i = 0; i < puzzle.size(); i++) {
       if (puzzle.at(i).value > 0) continue;
@@ -87,18 +87,18 @@ int main(const int arg_num, const char *arg_vec[]) {
         if (puzzle.at(i).row() == puzzle.at(j).row() ||
             puzzle.at(i).column() == puzzle.at(j).column() ||
             puzzle.at(i).block() == puzzle.at(j).block()) {
-          update = puzzle.at(i).remove_flag(puzzle.at(j).value);
+          updates += puzzle.at(i).remove_flag(puzzle.at(j).value);
         }
       }
 
       // ... and set value of cell if there is only one flag left
       if (puzzle.at(i).flags.size() == 1) {
         puzzle.at(i).value = puzzle.at(i).flags.at(0);
-        update = true;
+        updates++;
       }
     }
 
-    if (!update) {
+    if (updates == 0) {
       cout << "puzzle is unsolvable!\n";
       break;
     }
