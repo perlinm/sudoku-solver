@@ -49,7 +49,7 @@ int main(const int arg_num, const char *arg_vec[]) {
   // read in puzzle
   vector<cell> puzzle = {};
   {
-    uint row = 0, col = 0;
+    uint pos = 0;
     uint value = 0;
     char c;
     ifstream input(puzzle_file);
@@ -57,25 +57,25 @@ int main(const int arg_num, const char *arg_vec[]) {
       if (c == ' ') {
         value = 0;
       } else if (value_chars.find(c) != string::npos) {
-        value = c - '0';
+        value = c - '0'; // convert char to int
       } else continue;
 
-      puzzle.push_back(cell(row,col,value));
-      col++;
-      if (col == 9) {
-        col = 0;
-        row++;
-      }
+      puzzle.push_back(cell(pos/9,pos%9,value));
+      pos++;
     }
   }
 
-  uint c = 0;
-  for (uint i = 0; i < 9; i++) {
-    for (uint j = 0; j < 9; j++) {
-      cout << puzzle.at(c).value;
-      c++;
-    }
-    cout << endl;
+  // print solution
+  for (uint i = 0; i < puzzle.size(); i++) {
+    const uint col = i%9;
+    const uint row = i/9;
+
+    cout << puzzle.at(i).value;
+
+    if (i%9 == 8) cout << endl;
+    if (col == 2 || col == 5) cout << "|";
+    if (col == 8 && (row == 2 || row == 5)) cout << "-----------\n";
+
   }
 
 }

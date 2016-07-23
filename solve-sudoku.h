@@ -36,3 +36,10 @@ struct cell {
     }
   }
 };
+
+bool solved(const vector<cell>& puzzle) {
+  for (uint i = 0; i < puzzle.size(); i++) {
+    if (puzzle.at(i).value == 0) return false;
+  }
+  return true;
+}
