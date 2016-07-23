@@ -54,8 +54,13 @@ int main(const int arg_num, const char *arg_vec[]) {
     char input_char;
     uint cell_index = 0;
     while (cell_index < 81) {
+      if (input.eof()) {
+        cout << "unexpected EOF in puzzle file: " << puzzle_file << endl;
+        return -1;
+      }
+
       input.get(input_char);
-      if (input_char == ' ') {
+      if (input_char == ' ' || input_char == '_' || input_char == '0') {
         value = 0;
       } else if (value_chars.find(input_char) != string::npos) {
         value = input_char - '0'; // convert char to int
