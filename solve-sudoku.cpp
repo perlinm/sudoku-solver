@@ -50,19 +50,21 @@ int main(const int arg_num, const char *arg_vec[]) {
     ifstream input(puzzle_file);
     const string value_chars = "123456789";
 
-    char c;
     uint value;
-    uint pos = 0;
-    while (pos < 81) {
-      input.get(c);
-      if (c == ' ') {
+    char input_char;
+    uint cell_index = 0;
+    while (cell_index < 81) {
+      input.get(input_char);
+      if (input_char == ' ') {
         value = 0;
-      } else if (value_chars.find(c) != string::npos) {
-        value = c - '0'; // convert char to int
+      } else if (value_chars.find(input_char) != string::ncell_index) {
+        value = input_char - '0'; // convert char to int
       } else continue;
 
-      puzzle.push_back(cell(pos/9,pos%9,value));
-      pos++;
+      const uint row = cell_index/9;
+      const uint column = cell_index%9;
+      puzzle.push_back(cell(row,column,value));
+      cell_index++;
     }
   }
 
@@ -93,8 +95,8 @@ int main(const int arg_num, const char *arg_vec[]) {
 
   // print solution
   for (uint i = 0; i < puzzle.size(); i++) {
-    const uint column = i%9;
     const uint row = i/9;
+    const uint column = i%9;
 
     cout << puzzle.at(i).value;
 
