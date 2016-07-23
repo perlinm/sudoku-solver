@@ -47,11 +47,14 @@ int main(const int arg_num, const char *arg_vec[]) {
   // read in puzzle
   vector<cell> puzzle = {};
   {
-    uint pos = 0;
-    uint value = 0;
-    char c;
     ifstream input(puzzle_file);
-    while (input.get(c)) {
+    const string value_chars = "123456789";
+
+    char c;
+    uint value;
+    uint pos = 0;
+    while (pos < 81) {
+      input.get(c);
       if (c == ' ') {
         value = 0;
       } else if (value_chars.find(c) != string::npos) {
@@ -60,7 +63,6 @@ int main(const int arg_num, const char *arg_vec[]) {
 
       puzzle.push_back(cell(pos/9,pos%9,value));
       pos++;
-      if (puzzle.size() == 81) break;
     }
   }
 
