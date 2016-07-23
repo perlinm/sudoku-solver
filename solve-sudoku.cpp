@@ -96,10 +96,10 @@ int main(const int arg_num, const char *arg_vec[]) {
 
     cout << puzzle.at(i).value;
 
-    if (i%9 == 8) cout << endl;
     if (column == 2 || column == 5) cout << "|";
-    if (column == 8 && (row == 2 || row == 5)) cout << "-----------\n";
-
+    else if (i%9 == 8) cout << endl;
+    else cout << " ";
+    if (column == 8 && (row == 2 || row == 5)) cout << "-----------------\n";
   }
 
 }
