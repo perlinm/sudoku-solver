@@ -4,7 +4,7 @@ using namespace std;
 struct cell {
   const uint row_num;
   const uint column_num;
-  uint value = 0;
+  uint value;
   vector<uint> flags = {1,2,3,4,5,6,7,8,9};
 
   cell(const uint row, const uint column, const uint value);
