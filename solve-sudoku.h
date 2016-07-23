@@ -6,11 +6,6 @@ using namespace std;
 // characters delimiting cells in input file
 const string value_chars = "123456789";
 
-// check whether val is in vec
-inline bool in_vector(const uint val, const vector<uint>& vec) {
-  return (find(vec.begin(), vec.end(), val) != vec.end());
-}
-
 // cell struct
 struct cell {
   const uint row_num;
@@ -25,7 +20,7 @@ struct cell {
   uint block() const { return (column_num/3) + 3*(row_num/3); }
 
   void add_flag(const uint n) {
-    if (!in_vector(n, flags)) {
+    if (find(flags.begin(), flags.end(), n) == flags.end()) {
       flags.push_back(n);
       sort(flags.begin(), flags.end());
     }
