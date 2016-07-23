@@ -39,7 +39,7 @@ int main(const int arg_num, const char *arg_vec[]) {
     cout << "no puzzle provided\n";
     return 0;
   }
-  if (inputs.count("puzzle") && !boost::filesystem::exists(puzzle_file)) {
+  if (!boost::filesystem::exists(puzzle_file)) {
     cout << "puzzle does not exist: " << puzzle_file << endl;
     return 1;
   }
