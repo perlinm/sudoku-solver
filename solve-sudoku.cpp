@@ -57,7 +57,7 @@ int main(const int arg_num, const char *arg_vec[]) {
       input.get(input_char);
       if (input_char == ' ') {
         value = 0;
-      } else if (value_chars.find(input_char) != string::ncell_index) {
+      } else if (value_chars.find(input_char) != string::npos) {
         value = input_char - '0'; // convert char to int
       } else continue;
 
