@@ -1,10 +1,4 @@
-#pragma once
-#include <iostream> // for standard output
-
 using namespace std;
-
-// characters delimiting cells in input file
-const string value_chars = "123456789";
 
 // cell struct
 struct cell {
