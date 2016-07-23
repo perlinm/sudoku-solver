@@ -13,16 +13,16 @@ inline bool in_vector(const uint val, const vector<uint>& vec) {
 
 // cell struct
 struct cell {
-  const uint x;
-  const uint y;
+  const uint row_num;
+  const uint column_num;
   uint value = 0;
-  vector<uint> flags = {};
+  vector<uint> flags = {1,2,3,4,5,6,7,8,9};
 
-  cell(const uint x, const uint y, const uint value = 0);
+  cell(const uint row, const uint column, const uint value = 0);
 
-  uint row() const { return x; }
-  uint col() const { return y; }
-  uint block() const { return (y/3) + 3*(x/3); }
+  uint row() const { return row_num; }
+  uint column() const { return column_num; }
+  uint block() const { return (column_num/3) + 3*(row_num/3); }
 
   void add_flag(const uint n) {
     if (!in_vector(n, flags)) {

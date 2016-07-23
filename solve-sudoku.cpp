@@ -1,18 +1,16 @@
 #include <iostream> // for standard output
 #include <fstream> // for file input
-#include <boost/algorithm/string.hpp> // string manipulation library
 #include <boost/filesystem.hpp> // filesystem path manipulation library
 #include <boost/program_options.hpp> // options parsing library
 
 #include "solve-sudoku.h"
 
 using namespace std;
-namespace fs = boost::filesystem;
 namespace po = boost::program_options;
 
 
-cell::cell(const uint x, const uint y, const uint value) :
-  x(x), y(y) { this->value = value; };
+cell::cell(const uint row, const uint column, const uint value) :
+  row_num(row), column_num(column) { this->value = value; };
 
 
 int main(const int arg_num, const char *arg_vec[]) {
@@ -41,7 +39,7 @@ int main(const int arg_num, const char *arg_vec[]) {
     cout << "no puzzle provided\n";
     return 0;
   }
-  if (inputs.count("puzzle") && !fs::exists(puzzle_file)) {
+  if (inputs.count("puzzle") && !boost::filesystem::exists(puzzle_file)) {
     cout << "puzzle does not exist: " << puzzle_file << endl;
     return 1;
   }
@@ -62,19 +60,45 @@ int main(const int arg_num, const char *arg_vec[]) {
 
       puzzle.push_back(cell(pos/9,pos%9,value));
       pos++;
+      if (puzzle.size() == 81) break;
     }
+  }
+
+  // solve puzzle
+  while(!solved(puzzle)) {
+
+    // for each cell...
+    for (uint i = 0; i < puzzle.size(); i++) {
+      if (puzzle.at(i).value > 0) continue;
+
+      // update flags in cell
+      for (uint j = 0; j < puzzle.size(); j++) {
+        if (i == j) continue;
+        if (puzzle.at(i).row() == puzzle.at(j).row() ||
+            puzzle.at(i).column() == puzzle.at(j).column() ||
+            puzzle.at(i).block() == puzzle.at(j).block()) {
+          puzzle.at(i).del_flag(puzzle.at(j).value);
+        }
+      }
+
+      // set value of cell if there is only one flag left
+      if (puzzle.at(i).flags.size() == 1) {
+        puzzle.at(i).value = puzzle.at(i).flags.at(0);
+      }
+    }
+
   }
 
   // print solution
   for (uint i = 0; i < puzzle.size(); i++) {
-    const uint col = i%9;
+    const uint column = i%9;
     const uint row = i/9;
 
     cout << puzzle.at(i).value;
 
     if (i%9 == 8) cout << endl;
-    if (col == 2 || col == 5) cout << "|";
-    if (col == 8 && (row == 2 || row == 5)) cout << "-----------\n";
+    if (column == 2 || column == 5) cout << "|";
+    if (column == 8 && (row == 2 || row == 5)) cout << "-----------\n";
 
   }
 
