@@ -1,6 +1,5 @@
 using namespace std;
 
-// cell struct
 struct cell {
   const uint row_num;
   const uint column_num;
@@ -13,10 +12,14 @@ struct cell {
   uint column() const { return column_num; }
   uint block() const { return (column_num/3) + 3*(row_num/3); }
 
-  void remove_flag(const uint n) {
+  bool remove_flag(const uint n) {
     for (uint i = 0; i < flags.size(); i++) {
-      if (flags.at(i) == n) flags.erase(flags.begin()+i);
+      if (flags.at(i) == n) {
+        flags.erase(flags.begin()+i);
+        return true;
+      }
     }
+    return false;
   }
 };
 
