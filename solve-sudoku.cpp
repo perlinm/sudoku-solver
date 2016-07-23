@@ -44,7 +44,7 @@ int main(const int arg_num, const char *arg_vec[]) {
     return 1;
   }
 
-  // read in puzzle
+  // read in and initialize puzzle
   vector<cell> puzzle = {};
   {
     ifstream input(puzzle_file);
