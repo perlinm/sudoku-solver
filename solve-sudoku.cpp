@@ -107,18 +107,5 @@ int main(const int arg_num, const char *arg_vec[]) {
     }
   }
 
-  // print solution
-  for (uint i = 0; i < puzzle.size(); i++) {
-    const uint row = i/9;
-    const uint column = i%9;
-
-    if (puzzle.at(i).value != 0) cout << puzzle.at(i).value;
-    else cout << " ";
-
-    if (column == 2 || column == 5) cout << "|";
-    else if (i%9 == 8) cout << endl;
-    else cout << " ";
-    if (column == 8 && (row == 2 || row == 5)) cout << "-----------------\n";
-  }
-
+  print(puzzle);
 }

@@ -29,3 +29,18 @@ bool solved(const vector<cell>& puzzle) {
   }
   return true;
 }
+
+void print(const vector<cell>& puzzle) {
+  for (uint i = 0; i < puzzle.size(); i++) {
+    const uint row = i/9;
+    const uint column = i%9;
+
+    if (puzzle.at(i).value != 0) cout << puzzle.at(i).value;
+    else cout << " ";
+
+    if (column == 2 || column == 5) cout << "|";
+    else if (i%9 == 8) cout << endl;
+    else cout << " ";
+    if (column == 8 && (row == 2 || row == 5)) cout << "-----------------\n";
+  }
+}
