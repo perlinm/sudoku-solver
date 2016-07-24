@@ -10,7 +10,10 @@ namespace po = boost::program_options;
 
 
 cell::cell(const uint row, const uint column, const uint value) :
-  row_num(row), column_num(column) { this->value = value; };
+  row_num(row), column_num(column) {
+  this->value = value;
+  if (value != 0) this->flags = { value };
+};
 
 
 int main(const int arg_num, const char *arg_vec[]) {
