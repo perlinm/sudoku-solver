@@ -87,6 +87,38 @@ struct sudoku {
     return update;
   }
 
+  bool scan_groups() {
+    bool update = false;
+    // for each group of 9 cells
+    for (group g: { group::row, group::column, group::block }) {
+      for (uint p = 0; p < 9; p++) {
+
+        // for each value (i.e. 1..9)
+        for (uint n = 1; n <= 9; n++) {
+
+          // collect indices of cells which could contain this value
+          vector<uint> candidate_indices = {};
+
+          // for each cell in this group
+          for (uint i: group_indices(g,p)) {
+            // if the cell flags contain this value, it is a candidate cell
+            if (in_vector(n,cells.at(i).flags)) {
+              candidate_indices.push_back(i);
+            }
+          }
+
+          // if there is only one candidate cell for this value,
+          //   remove all other flags from that cell, i.e. "almost" set the value.
+          if (candidate_indices.size() == 1) {
+            cells.at(candidate_indices.at(0)).flags = {n};
+            update = true;
+          }
+        }
+      }
+    }
+    return update;
+  }
+
   bool set_cells_with_one_flag() {
     bool update = false;
     for (uint i = 0; i < cells.size(); i++) {
