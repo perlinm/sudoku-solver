@@ -12,7 +12,7 @@ namespace po = boost::program_options;
 cell::cell(const uint row, const uint column, const uint value) :
   row_num(row), column_num(column) {
   this->value = value;
-  if (value != 0) this->flags = { value };
+  if (value != 0) this->flags = {};
 };
 
 
@@ -48,7 +48,7 @@ int main(const int arg_num, const char *arg_vec[]) {
   }
 
   // read in and initialize puzzle
-  vector<cell> puzzle = {};
+  sudoku puzzle;
   {
     ifstream input(puzzle_file);
     const string value_chars = "123456789";
@@ -71,41 +71,54 @@ int main(const int arg_num, const char *arg_vec[]) {
 
       const uint row = cell_index/9;
       const uint column = cell_index%9;
-      puzzle.push_back(cell(row,column,value));
+      puzzle.cells.push_back(cell(row,column,value));
       cell_index++;
     }
   }
 
   // solve puzzle
-  while(!solved(puzzle)) {
+  while(!puzzle.solved()) {
 
-    uint updates = 0;
-    // for each cell...
-    for (uint i = 0; i < puzzle.size(); i++) {
-      if (puzzle.at(i).value > 0) continue;
+    bool update = false;
+    update |= puzzle.set_cells_with_one_flag();
+    update |= puzzle.update_flags();
 
-      // ... update flags in cell ...
-      for (uint j = 0; j < puzzle.size(); j++) {
-        if (i == j) continue;
-        if (puzzle.at(i).row() == puzzle.at(j).row() ||
-            puzzle.at(i).column() == puzzle.at(j).column() ||
-            puzzle.at(i).block() == puzzle.at(j).block()) {
-          updates += puzzle.at(i).remove_flag(puzzle.at(j).value);
+    // for each group
+    for (group g: { group::row, group::column, group::block }) {
+      for (uint p = 0; p < 9; p++) {
+
+        // for each value
+        for (uint n = 1; n <= 9; n++) {
+
+          // collect cells which could contain this value
+          vector<uint> candidate_indices = {};
+
+          // for each cell in this group
+          for (uint i: group_indices(g,p)) {
+            // if the cell flags contain this value, it is a candidate cell
+            if (in_vector(n,puzzle.cells.at(i).flags)) {
+              candidate_indices.push_back(i);
+            }
+          }
+
+          // if there is only one candidate cell for this value, set the value
+          if (candidate_indices.size() == 1) {
+            puzzle.cells.at(candidate_indices.at(0)).flags = {n};
+            update = true;
+          }
         }
-      }
-
-      // ... and set value of cell if there is only one flag left
-      if (puzzle.at(i).flags.size() == 1) {
-        puzzle.at(i).value = puzzle.at(i).flags.at(0);
-        updates++;
       }
     }
 
-    if (updates == 0) {
-      cout << "puzzle is unsolvable!\n";
+    if (!update) {
+      cout << "puzzle not solved!\n";
+      puzzle.print();
+      return 1;
       break;
     }
   }
 
-  print(puzzle);
+  puzzle.print();
+  return 0;
+
 }
