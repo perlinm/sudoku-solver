@@ -80,9 +80,9 @@ int main(const int arg_num, const char *arg_vec[]) {
   while(!puzzle.solved()) {
 
     bool update = false;
-    update |= puzzle.update_flags();
-    update |= puzzle.scan_groups();
     update |= puzzle.set_cells_with_one_flag();
+    update |= puzzle.update_flags();
+    if (!update) update |= puzzle.scan_groups();
 
     if (!update) {
       cout << "puzzle not solved!\n";
