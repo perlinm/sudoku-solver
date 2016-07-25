@@ -84,11 +84,6 @@ int main(const int arg_num, const char *arg_vec[]) {
     update |= puzzle.update_flags();
     if (!update) {
       for (uint subgroup_size = 1; subgroup_size < 9; subgroup_size++) {
-        uint total_flags = 0;
-        for (uint i = 0; i < 81; i++) {
-          total_flags += puzzle.cells.at(i).flags.size();
-        }
-        cout << subgroup_size << " " << total_flags << endl;
         update |= puzzle.scan_groups(subgroup_size);
         if (update) break;
       }

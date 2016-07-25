@@ -183,7 +183,6 @@ struct sudoku {
 
         // if |union candidate cells lists for subgroup_size values| == subgroup_size,
         //   these cells can only contain these values
-        //////////////////////////////////////////////////////////////////////////////////
         for (vector<uint> subgroup: subgroups(unfilled_cells.size(), subgroup_size)) {
           vector<uint> combined_candidates = {};
           vector<uint> combined_values = {};
