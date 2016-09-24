@@ -12,7 +12,6 @@ with open("puzzles.txt",'r') as f:
         if "Grid" in line:
             puzzle = ""
             puzzle_count += 1
-            print(line.strip())
             continue
         else: puzzle += line.strip()
 
@@ -22,11 +21,14 @@ with open("puzzles.txt",'r') as f:
             puzzle_file.close()
             cmd_list = ["./solve-sudoku.exe",
                         "--puzzle", puzzle_file.name]
-            print(" ".join(cmd_list))
             output, _ = sp.Popen(cmd_list, stdout=sp.PIPE).communicate()
             output = output.decode("utf-8").strip()
-            print(output)
 
-            if not "not solved" in output: solved_puzzles += 1
+            if "not solved" in output:
+                print("\npuzzle {}:".format(puzzle_count))
+                print(" ".join(cmd_list))
+                print(output)
+            else:
+                solved_puzzles += 1
 
 print("solved: {}/{}".format(solved_puzzles,puzzle_count))

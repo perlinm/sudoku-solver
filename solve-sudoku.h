@@ -7,7 +7,7 @@ inline bool in_vector(const uint val, const vector<uint>& vec) {
 
 // return indices of all subgroups of a given size from a group of a given size
 vector<vector<uint>> subgroups(const uint group_size, const uint subgroup_size) {
-  assert(group_size > subgroup_size);
+  assert(group_size >= subgroup_size);
   const uint max_group_index = group_size-1;
   const uint max_subgroup_index = subgroup_size-1;
 
@@ -131,7 +131,7 @@ struct sudoku {
   }
 
   // method to scan each group of 9 cells and eliminate any impossible flags;
-  // if we find a subgroup of N cells mutually containing N values, eliminate
+  // if we find a subgroup of N cells covering N values, eliminate
   //   all flags for all other values from these cells
   bool scan_groups(const uint subgroup_size) {
     bool update = false;
@@ -151,15 +151,15 @@ struct sudoku {
 
         // collect list of unused values
         vector<uint> unused_values = {};
-        for (uint n = 1; n <= 9; n++) {
+        for (uint value = 1; value <= 9; value++) {
           bool unused = true;
           for (uint i: filled_cells) {
-            if (cells.at(i).value == n) {
+            if (cells.at(i).value == value) {
               unused = false;
               break;
             }
           }
-          if (unused) unused_values.push_back(n);
+          if (unused) unused_values.push_back(value);
         }
         assert(unfilled_cells.size() == unused_values.size());
 
@@ -193,11 +193,83 @@ struct sudoku {
           }
           if (combined_candidates.size() == subgroup_size) {
             for (uint i: combined_candidates) {
-              for (uint n: cells.at(i).flags) {
-                if (!in_vector(n, combined_values)) {
-                  cells.at(i).remove_flag(n);
+              for (uint flag: cells.at(i).flags) {
+                if (!in_vector(flag, combined_values)) {
+                  cells.at(i).remove_flag(flag);
                   update = true;
                 }
+              }
+            }
+          }
+        }
+      }
+    }
+    return update;
+  }
+
+  // if we find that in a stack of three blocks
+  //   a value N can only fill line (i.e. row or column) L
+  //   in the intersection of L and block B,
+  //   remove all flags of N from cells in B which are not in L
+  bool scan_stacks() {
+    bool update = false;
+    const vector<uint> head_blocks = { 0, 1, 2, 0, 3, 6 };
+    const vector<group_type> line_types =
+      { group_type::column, group_type::column, group_type::column,
+        group_type::row, group_type::row, group_type::row };
+
+    // for each stack
+    for (uint stack = 0; stack < head_blocks.size(); stack++) {
+      // collect indices of cells in this stack
+      const uint head_block = head_blocks.at(stack);
+      const uint head_cell = block_indices(head_block).at(0);
+      const group_type line_type = line_types.at(stack);
+      const uint head_line_index = cells.at(head_cell).group_num(line_type);
+      vector<uint> stack_cells = {};
+      for (uint l = 0; l < 3; l++) {
+        const uint line_index = head_line_index + l;
+        stack_cells = combine_lists(stack_cells, group_indices(line_type, line_index));
+      }
+      // for each value
+      for (uint value = 1; value < 9; value++) {
+        // only perform scan for n if there are no instances of n in this triplet set
+        bool no_instances = true;
+        for (uint i: stack_cells) {
+          if (cells.at(i).value == value) {
+            no_instances = false;
+            break;
+          }
+        }
+        if (!no_instances) continue;
+
+        // for each line in this set
+        for (uint l = 0; l < 3; l++) {
+          // collect list of candiate cells in this line
+          vector<uint> candidate_cells = {};
+          const uint line_index = head_line_index + l;
+          for (uint i: group_indices(line_type, line_index)) {
+            if (in_vector(value,cells.at(i).flags)) candidate_cells.push_back(i);
+          }
+
+          // check whether all candidate cells in line L are contained in one block B
+          bool candidates_in_single_block = true;
+          if (candidate_cells.size() > 1) {
+            for (vector<uint> pairs: subgroups(candidate_cells.size(), 2)) {
+              const uint first = candidate_cells.at(pairs.at(0));
+              const uint second = candidate_cells.at(pairs.at(1));
+              if (cells.at(first).block() != cells.at(second).block()) {
+                candidates_in_single_block = false;
+                break;
+              }
+            }
+          }
+
+          // if so, remove flags for n from all cells which are in B, but not L
+          if (candidates_in_single_block) {
+            const uint candidate_block = cells.at(candidate_cells.at(0)).block();
+            for (uint i: block_indices(candidate_block)) {
+              if (!in_vector(i, group_indices(line_type, line_index))) {
+                update |= cells.at(i).remove_flag(value);
               }
             }
           }

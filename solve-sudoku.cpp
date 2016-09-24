@@ -88,12 +88,21 @@ int main(const int arg_num, const char *arg_vec[]) {
         if (update) break;
       }
     }
+    if (!update) update |= puzzle.scan_stacks();
 
     if (!update) {
-      cout << "puzzle not solved!\n";
+      cout << "puzzle not solved!\n"
+           << "incomplete values:";
+      for (uint value = 1; value <= 9; value++) {
+        uint value_count = 0;
+        for (uint i = 0; i < puzzle.cells.size(); i++) {
+          if (puzzle.cells.at(i).value == value) value_count++;
+        }
+        if (value_count < 9) cout << " " << value;
+      }
+      cout << endl;
       puzzle.print();
       return 1;
-      break;
     }
   }
 
